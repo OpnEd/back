@@ -2,9 +2,35 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Auth;
+use App\Repositories\Eloquent\UserRepository;
+use Illuminate\Support\Facades\Hash;
+use App\Classes\ApiResponseClass;
+use App\Http\Resources\UserResource;
 
-class UserService
+class UserService extends BaseService
 {
+    public function __construct(UserRepository $userRepository) {
+        parent::__construct($userRepository);
+    }
+
+    public function updateUserProfile($userId, array $data) {
+        try {
+            $updatedUser = $this->repository->updateProfile($userId, $data);
+            return ApiResponseClass::sendResponse(new UserResource($updatedUser), "Profile updated successfully");
+        } catch (\Exception $e) {
+            ApiResponseClass::throw($e, "Failed to update user's profile");
+        }
+    }
+
+    public function createNewUser(array $data) {
+        try {
+            $data['password'] = Hash::make($data['password']);
+            $user = $this->repository->createUser($data);
+            return ApiResponseClass::sendResponse(new UserResource($user), "User created successfully");
+        } catch (\Exception $e) {
+            ApiResponseClass::throw($e, "Failed to create user");
+        }
+    }
     /**
      * Obtener el usuario autenticado si el token es válido.
      *

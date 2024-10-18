@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            // Agregar el índice único para 'card_id' y 'card_id_type'
+            $table->unique(['card_id', 'card_id_type']);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

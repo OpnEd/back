@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\Request;
 use App\Services\UserService;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -36,9 +38,9 @@ class UserController extends Controller implements HasMiddleware
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(StoreUserRequest $request) {
+        $validatedData = $request->validated();
+        return $this->userService->createNewUser($validatedData);
     }
 
     /**
@@ -52,9 +54,9 @@ class UserController extends Controller implements HasMiddleware
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
+    public function update(UpdateUserRequest $request, $userId) {
+        $validatedData = $request->validated();
+        return $this->userService->updateUserProfile($userId, $validatedData);
     }
 
     /**
